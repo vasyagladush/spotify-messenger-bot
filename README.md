@@ -2,21 +2,31 @@
 
 A bot which uses Spotify API, Genius API and a messenger platform API to send you the text of a song which is currently being played.
 
+The app can be run by just Spring Boot Run command or in app and database Docker containers (different environment variables and run commands, see below and `.env.*` files)
+
 # Prerequirements
 
 -   Java
 -   Docker
 -   Maven (not really needed as the Maven wrapper is in this repo: `/.mvn`, can be used with a command: `./mvnw`)
 
+# DB Migrations
+DB migrations are run automatically by Flyway everytime the app is started. The strict naming should be followed: 
+V{version_number}__clear-migration-name
+Examples:
+- V0__create-public-schema
+- V1_0__create-user-table
+
 # Most Used Commands
 
+-   Spring Boot Run (propertoes are configures so thisw way Docker containers are not being set up): `./mvnw spring-boot:run`
 -   rebuild image and run Docker compose: `docker-compose up --build`
 -   rebuild image and run Docker compose in background: `docker-compose up --build -d` **(use this to run the containers with app and DB)**
 -   stop Docker compose containers: `docker-compose down` **(use this to stop the app and DB containers)**
 
 # All Commands
 
--   Spring Boot Run (not needed as we dockerize our app itself): `./mvnw spring-boot:run`
+-   Spring Boot Run (propertoes are configures so thisw way Docker containers are not being set up): `./mvnw spring-boot:run`
 -   Maven package (skipping tests): `./mvnw clean package -DskipTests`
 -   Maven install (skipping tests): `./mvnw clean install -DskipTests` (used in Dockerfile)
 -   run Docker compose: `docker-compose up`
@@ -27,14 +37,11 @@ A bot which uses Spotify API, Genius API and a messenger platform API to send yo
 -   force recreate Docker image, build and run Docker compose: `docker-compose up --force-recreate --build -d`
 -   stop Docker compose containers: `docker-compose down` **(use this to stop the app and DB containers)** **(most used)**
 -   restart Docker compose containers: `docker-compose restart`
+-   pring Docker compose config (can be used to see if environment variables are used properly): `docker-compose config`
 
 # [start.spring.io](https://start.spring.io) config
 
 ![Sprint Start Config](spring-start-config.png)
-
-# systom.properties
-
-This file is added for Heroku hosting so it knows which Java version is used
 
 # Sources:
 
@@ -49,3 +56,4 @@ This file is added for Heroku hosting so it knows which Java version is used
 -   Spring Boot + Postgres + Docker: https://blog.phillipninan.com/how-to-containerize-spring-boot-and-postgres-jdbc
 -   Spring Boot + Postgres + Docker: https://www.baeldung.com/spring-boot-postgresql-docker
 -   Official Docker Guidelines for Spring Boot: https://www.docker.com/blog/9-tips-for-containerizing-your-spring-boot-code/
+-   Deploying to Render (there's also something about Jib package that helps build Docker image without the need to write the Dockerfile): https://medium.com/@nithinsudarsan/deploying-a-spring-boot-application-with-docker-image-on-render-com-9a87f5ce5f72
