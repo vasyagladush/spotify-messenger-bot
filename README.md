@@ -2,18 +2,30 @@
 
 A bot which uses Spotify API, Genius API and a messenger platform API to send you the text of a song which is currently being played.
 
-# Commands
+# Prerequirements
+
+-   Java
+-   Docker
+-   Maven (not really needed as the Maven wrapper is in this repo: `/.mvn`, can be used with a command: `./mvnw`)
+
+# Most Used Commands
+
+-   rebuild image and run Docker compose: `docker-compose up --build`
+-   rebuild image and run Docker compose in background: `docker-compose up --build -d` **(use this to run the containers with app and DB)**
+-   stop Docker compose containers: `docker-compose down` **(use this to stop the app and DB containers)**
+
+# All Commands
 
 -   Spring Boot Run (not needed as we dockerize our app itself): `./mvnw spring-boot:run`
 -   Maven package (skipping tests): `./mvnw clean package -DskipTests`
 -   Maven install (skipping tests): `./mvnw clean install -DskipTests` (used in Dockerfile)
 -   run Docker compose: `docker-compose up`
 -   build/rebuild Docker image: `docker-compose build`
--   rebuild image and run Docker compose: `docker-compose up --build` (most used)
--   rebuild image and run Docker compose in background: `docker-compose up --build -d` (most used)
+-   rebuild image and run Docker compose: `docker-compose up --build` **(most used)**
+-   rebuild image and run Docker compose in background: `docker-compose up --build -d` **(use this to run the containers with app and DB)** **(most used)**
 -   run Docker compose and run containers in background: `docker-compose up -d`
 -   force recreate Docker image, build and run Docker compose: `docker-compose up --force-recreate --build -d`
--   stop Docker compose containers: `docker-compose down` (most used)
+-   stop Docker compose containers: `docker-compose down` **(use this to stop the app and DB containers)** **(most used)**
 -   restart Docker compose containers: `docker-compose restart`
 
 # [start.spring.io](https://start.spring.io) config
@@ -21,9 +33,11 @@ A bot which uses Spotify API, Genius API and a messenger platform API to send yo
 ![Sprint Start Config](spring-start-config.png)
 
 # systom.properties
-This file is added for Heroku hosting so it knows which Java version is used 
+
+This file is added for Heroku hosting so it knows which Java version is used
 
 # Sources:
+
 -   A really good guide on having both Spring Boot App and Database in Docker Containers: https://dev.to/francescoxx/java-crud-rest-api-using-spring-boot-hibernate-postgres-docker-and-docker-compose-5cln
 -   Postgres: https://hackernoon.com/using-postgres-effectively-in-spring-boot-applications
 -   Postgres: https://www.baeldung.com/spring-boot-postgresql-docker
