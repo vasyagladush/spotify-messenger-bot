@@ -1,0 +1,28 @@
+services:
+  postgres_db:
+    image: 'postgres:latest'
+    restart: always
+    environment:
+      - 'POSTGRES_DB=${DATABASE_NAME}'
+      - 'POSTGRES_USER=${DATABASE_USER}'
+      - 'POSTGRES_PASSWORD=${DATABASE_PASSWORD}'
+    ports:
+      - '5432:5432'
+
+  app:
+    image: 'spotify-messenger-bot:latest'
+    restart: always
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: app
+    depends_on:
+      - postgres_db
+    environment:
+      - SPRING_DATASOURCE_URL=${DATABASE_URL}${DATABASE_NAME}
+      - SPRING_DATASOURCE_USERNAME=${DATABASE_USER}
+      - SPRING_DATASOURCE_PASSWORD=${DATABASE_PASSWORD}
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=none
+    ports:
+      - '8080:8080'
+
