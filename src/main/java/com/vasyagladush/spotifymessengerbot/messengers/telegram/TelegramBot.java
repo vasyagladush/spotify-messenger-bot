@@ -10,6 +10,7 @@ import org.telegram.telegrambots.meta.api.methods.updates.SetWebhook;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import com.vasyagladush.spotifymessengerbot.lyricsproviders.genius.GeniusService;
 import com.vasyagladush.spotifymessengerbot.models.MessengerPlatform;
 import com.vasyagladush.spotifymessengerbot.models.MusicProviderPlatform;
 import com.vasyagladush.spotifymessengerbot.models.User;
@@ -26,12 +27,13 @@ public class TelegramBot extends TelegramWebhookBot {
     private final String webhookSecretToken;
     private final UserService userService;
     private final SpotifyService spotifyService;
+    private final GeniusService geniusService;
 
     @Autowired
     public TelegramBot(@Value("${TELEGRAM_BOT_TOKEN}") String botToken,
             @Value("${TELEGRAM_BOT_USERNAME}") String botUsername, @Value("${BASE_URL}") String baseUrl,
             @Value("${TELEGRAM_WEBHOOK_SECRET_TOKEN}") String webhookSecretToken, UserService userService,
-            SpotifyService spotifyService) {
+            SpotifyService spotifyService, GeniusService geniusService) {
         super(botToken);
         this.botToken = botToken;
         this.botUsername = botUsername;
@@ -39,6 +41,7 @@ public class TelegramBot extends TelegramWebhookBot {
         this.webhookSecretToken = webhookSecretToken;
         this.userService = userService;
         this.spotifyService = spotifyService;
+        this.geniusService = geniusService;
     }
 
     @Override
@@ -77,9 +80,9 @@ public class TelegramBot extends TelegramWebhookBot {
     @Override
     public BotApiMethod<?> onWebhookUpdateReceived(Update update) {
         final Long chatId = update.getMessage().getChatId();
+        try {
+            if (update.hasMessage() && update.getMessage().hasText()) {
 
-        if (update.hasMessage() && update.getMessage().hasText()) {
-            try {
                 String messageText = update.getMessage().getText().trim();
                 String response = "Error: invalid input";
 
@@ -89,13 +92,16 @@ public class TelegramBot extends TelegramWebhookBot {
                 if (messageText.equals("/start") || messageText.equals("/reauthorize")) {
 
                     response = spotifyService.constructAuthorizationLink(user.getId().toString());
+                    this.execute(new SendMessage(chatId.toString(), response));
+                    return null;
                 }
                 if (messageText.equals("/lyrics") || messageText.equals("Lyrics")) {
                     SpotifyGetCurrentlyPlayingTrackResponse currentlyPlayingTrack = spotifyService
                             .getCurrentlyPlayingTrack(user);
 
                     if (currentlyPlayingTrack == null) {
-                        return new SendMessage(chatId.toString(), "No song's playing.");
+                        this.execute(new SendMessage(chatId.toString(), "No song's playing."));
+                        return null;
                     }
 
                     final String songName = currentlyPlayingTrack.getItem().getName();
@@ -116,15 +122,20 @@ public class TelegramBot extends TelegramWebhookBot {
                         response = String.format("Song: %s\nArtist: %s", songName, artistNames);
                     }
 
+                    this.execute(new SendMessage(chatId.toString(), response));
+                    this.execute(new SendMessage(chatId.toString(),
+                            this.geniusService.getSongLyrics(songName, artistNames)));
+                    return null;
                 }
 
-                this.execute(new SendMessage(chatId.toString(), response));
-            } catch (Throwable e) {
-                e.printStackTrace();
-                return new SendMessage(chatId.toString(), "An error occured, please try again.");
+            } else {
+                this.execute(new SendMessage(chatId.toString(), "Error: No message input"));
             }
+        } catch (Throwable e) {
+            e.printStackTrace();
+            return null;
         }
 
-        return new SendMessage(chatId.toString(), "Error: No message input");
+        return null;
     }
 }
