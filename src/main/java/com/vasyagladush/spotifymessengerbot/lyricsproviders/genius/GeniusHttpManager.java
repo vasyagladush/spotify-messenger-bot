@@ -1,9 +1,9 @@
 package com.vasyagladush.spotifymessengerbot.lyricsproviders.genius;
 
-import javax.net.ssl.HttpsURLConnection;
-import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
+// import javax.net.ssl.HttpsURLConnection;
+// import java.io.*;
+// import java.net.HttpURLConnection;
+// import java.net.URL;
 
 // Almost the same as  com.github.LowLevelSubmarine.core.HttpManager
 public class GeniusHttpManager {

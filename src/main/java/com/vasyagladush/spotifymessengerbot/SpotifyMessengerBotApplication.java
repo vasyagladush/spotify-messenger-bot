@@ -1,5 +1,7 @@
 package com.vasyagladush.spotifymessengerbot;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -12,6 +14,8 @@ import jakarta.annotation.PostConstruct;
 
 @SpringBootApplication
 public class SpotifyMessengerBotApplication {
+	private static final Logger logger = LogManager.getLogger(TelegramBot.class);
+
 	@Autowired
 	private TelegramBot telegramBot;
 
@@ -22,14 +26,16 @@ public class SpotifyMessengerBotApplication {
 	@PostConstruct
 	public void registerTelegramBot() {
 		try {
+			logger.info("Starting Telegram Bot set up");
 			SetWebhook setWebhook = SetWebhook.builder().url(telegramBot.getWebhookBaseUrl())
 					.secretToken(telegramBot.getWebhookSecretToken()).build();
 			telegramBot.onRegister();
 			telegramBot.setWebhook(setWebhook);
-			System.out.println(
+			logger.info(
 					"Successfully registered Telegram Bot, with webhook URL: " + telegramBot.getWebhookBaseUrl());
 		} catch (TelegramApiException e) {
-			e.printStackTrace();
+			logger.error("Error setting up Telegram Bot");
+			logger.trace(e.getStackTrace());
 		}
 	}
 }
