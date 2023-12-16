@@ -55,7 +55,9 @@ public class UserService {
             final Date accessTokenExpiresAt) {
         user.setMusicProviderAccessToken(accessToken);
         user.setMusicProviderAccessTokenExpiresAt(accessTokenExpiresAt);
-        user.setMusicProviderRefreshToken(refreshToken);
+        if (refreshToken != null) {
+            user.setMusicProviderRefreshToken(refreshToken);
+        }
         repository.save(user);
         return user;
     }
