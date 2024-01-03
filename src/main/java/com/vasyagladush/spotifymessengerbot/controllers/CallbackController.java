@@ -34,7 +34,7 @@ public class CallbackController {
 
     @GetMapping("/spotify/")
     @ResponseBody
-    public String onTelegramUpdateReceived(@RequestParam("code") final String code,
+    public String onSpotifyCallback(@RequestParam("code") final String code,
             @RequestParam("state") final String state) {
         try {
             logger.info("Spotify: callback url hit, state: " + state);

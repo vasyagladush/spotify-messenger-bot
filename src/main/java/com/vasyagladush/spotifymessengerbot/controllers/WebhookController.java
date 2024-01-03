@@ -26,7 +26,7 @@ public class WebhookController {
     }
 
     @PostMapping("/telegram/")
-    public ResponseEntity<?> onTelegramUpdateReceived(@RequestBody Update update,
+    public ResponseEntity<?> onTelegramWebhookReceived(@RequestBody Update update,
             @RequestHeader("X-Telegram-Bot-Api-Secret-Token") String secretToken) {
         logger.debug("Telegram: new webhook received");
         if (!secretToken.equals(telegramBot.getWebhookSecretToken())) {
